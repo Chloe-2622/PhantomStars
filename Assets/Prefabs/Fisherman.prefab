@@ -78,14 +78,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dac273a51fff1e46bba938426bba3b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chargeAction: {fileID: -7078161582840033764, guid: 174d8f87be5a1a84db19ffd79dabba5e, type: 3}
-  stickChooseDirectionAction: {fileID: 2897654090433043288, guid: 174d8f87be5a1a84db19ffd79dabba5e, type: 3}
-  crossChooseDirectionAction: {fileID: 695590553390562153, guid: 174d8f87be5a1a84db19ffd79dabba5e, type: 3}
+  chargeAction: {fileID: 2528069918156877651, guid: 174d8f87be5a1a84db19ffd79dabba5e, type: 3}
+  stickChooseDirectionAction: {fileID: 747643800816909144, guid: 174d8f87be5a1a84db19ffd79dabba5e, type: 3}
+  crossChooseDirectionAction: {fileID: 8614259701659070539, guid: 174d8f87be5a1a84db19ffd79dabba5e, type: 3}
   boat: {fileID: 3283312983080058616}
   chargeImage: {fileID: 0}
   directionArrow: {fileID: 0}
   chargeJauge: {fileID: 0}
   fillTime: 1
+  angleStep: 10
 --- !u!1 &7437295794639426596
 GameObject:
   m_ObjectHideFlags: 0
