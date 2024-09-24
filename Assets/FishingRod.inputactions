@@ -1,0 +1,34 @@
+{
+    "name": "FishingRod",
+    "maps": [
+        {
+            "name": "FishingRodActions",
+            "id": "4ee18d65-c858-46b5-bd0a-ae9bc38517ce",
+            "actions": [
+                {
+                    "name": "Reel",
+                    "type": "Button",
+                    "id": "03c84a00-163e-47de-aded-84199085216d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "27b10651-a8fe-47bc-9264-5e22a437cef2",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
