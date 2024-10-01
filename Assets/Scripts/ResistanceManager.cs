@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace PhantomStars
 {
@@ -10,19 +11,39 @@ namespace PhantomStars
 
         public enum ResistanceState
         {
-            IDLE,
             REGENERATING,
             RESISTING,
             HARDRESISTING
         }
 
         [Header("Parameters")]
+        // When the resistance reaches maxResistance, the fish escapes
+        // The resistance is increased by resistanceRate every second
         [SerializeField] private float resistance = 50f;
         [SerializeField] private float maxResistance = 100f;
         [SerializeField] private float resistanceRate = 10f;
 
-        [Header("Courant")]
-        public GameObject courant;
+        // Rate at which the resistance decreases while in current and not pulling
+        [SerializeField] private float resistanceRegenerationRate = 5f;
+
+        // Rate at which the resistance increases while in current and pulling or while not in current and not pulling
+        [SerializeField] private float resistanceResistingRate = 10f;
+
+        // Rate at which the resistance increases while not in current and pulling
+        [SerializeField] private float resistanceHardResistingRate = 20f;
+
+        [Header("Current")]
+        public GameObject current;
+        private bool isInCurrent = false;
+
+        [Header("Fishing Rod")]
+        private bool isPullingFish = false;
+        [SerializeField] private bool isFishReeled = false;
+        // Progression of the fish between 0 (farthest) and 1 (closest)
+        private float fishProgression = 0.0f;
+
+        [Header("Events")]
+        public UnityEvent EscapeEvent = new UnityEvent();
 
         private ResistanceState resistanceState = ResistanceState.REGENERATING;
 
@@ -33,7 +54,7 @@ namespace PhantomStars
 
         private void Update()
         {
-            UpdateResistance();
+            if (isFishReeled) UpdateResistance();
         }
 
         public void ChangeResistanceState(ResistanceState newState)
@@ -42,30 +63,78 @@ namespace PhantomStars
 
             switch (resistanceState)
             {
-                case ResistanceState.IDLE:
-                    resistance = 50f;
-                    resistanceRate = 0f;
-                    break;
                 case ResistanceState.REGENERATING:
-                    resistanceRate = -10f;
+                    resistanceRate = -resistanceRegenerationRate;
                     break;
                 case ResistanceState.RESISTING:
-                    resistanceRate = 5f;
+                    resistanceRate = resistanceResistingRate;
                     break;
                 case ResistanceState.HARDRESISTING:
-                    resistanceRate = 20f;
+                    resistanceRate = resistanceHardResistingRate;
                     break;
             }
         }
 
         private void UpdateResistance()
         {
-            resistance += resistanceRate * Time.deltaTime;
+            if (isInCurrent) {
+                if (isPullingFish && resistanceState != ResistanceState.RESISTING)
+                {
+                    ChangeResistanceState(ResistanceState.RESISTING);
+                }
+                else if (!isPullingFish && resistanceState != ResistanceState.REGENERATING)
+                {
+                    ChangeResistanceState(ResistanceState.REGENERATING);
+                }
+            } else {
+                if (isPullingFish && resistanceState != ResistanceState.HARDRESISTING)
+                {
+                    ChangeResistanceState(ResistanceState.HARDRESISTING);
+                }
+                else if (!isPullingFish && resistanceState != ResistanceState.RESISTING)
+                {
+                    ChangeResistanceState(ResistanceState.RESISTING);
+                }
+            }
+            resistance += resistanceRate * (resistanceRate > 0 ? (1 + fishProgression) : 1) * Time.deltaTime;
+
+            Camera.main.GetComponent<CameraShake>().SetIsShaking(resistanceRate > 0);
+            if (resistanceRate > 0) Camera.main.GetComponent<CameraShake>().SetShakeIntensity(Mathf.Exp(4 * resistance / maxResistance - 4));
+
             resistance = Mathf.Clamp(resistance, 0, maxResistance);
             if (resistance >= maxResistance)
             {
-                Debug.Log("The fish has escaped!");
+                EscapeEvent.Invoke();
             }
+        }
+
+        public void SetIsInCurrent(bool value)
+        {
+            isInCurrent = value;
+        }
+
+        public bool IsInCurrent()
+        {
+            return isInCurrent;
+        }
+
+        public void SetIsPullingFish(bool value)
+        {
+            isPullingFish = value;
+        }
+
+        public void SetIsFishReeled(bool value)
+        {
+            isFishReeled = value;
+            if (!value)
+            {
+                resistance = 50f;
+            }
+        }   
+
+        public void SetFishProgression(float progression)
+        {
+            fishProgression = progression;
         }
     }
 }
