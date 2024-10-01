@@ -23,6 +23,7 @@ namespace PhantomStars
         [SerializeField] private Image chargeJauge;
         [SerializeField] private float fillTime;
         private float time;
+        private bool isCharging;
 
         [Header("Direction")]
         [SerializeField] private float angleStep;
@@ -67,22 +68,18 @@ namespace PhantomStars
             windowSize = -Camera.main.ScreenToWorldPoint(Vector3.zero);
 
             Vector3 pos = Camera.main.WorldToScreenPoint(transform.position);
-            directionArrow.transform.position = pos;
-            directionArrow.transform.rotation = Quaternion.Euler(0, 0, 90);
-
+            directionArrow.transform.SetLocalPositionAndRotation(pos, Quaternion.Euler(0, 0, 90));
         }
         #endregion Initialize
 
+
         private void Update()
         {
-            Debug.Log(directionArrow.transform.rotation.eulerAngles.z);
-            if (!crossChooseDirection) { return; }
+            if (!crossChooseDirection || !isCharging) { return; }
 
             float direction = crossChooseDirectionAction.action.ReadValue<Vector2>()[0];
 
-            float newAngle = Mathf.Min(0, Mathf.Max(directionArrow.transform.rotation.eulerAngles.z - direction * angleStep * Time.deltaTime));
-
-
+            float newAngle = Mathf.Max(0, Mathf.Min(180, directionArrow.transform.rotation.eulerAngles.z - direction * angleStep * Time.deltaTime));
 
             directionArrow.transform.rotation = Quaternion.Euler(0, 0, newAngle);
         }
@@ -97,12 +94,14 @@ namespace PhantomStars
         private void StartCharge(InputAction.CallbackContext context)
         {
             SetUIActive(true);
+            isCharging = true;
             StartCoroutine(Charge(1));
         }
 
         private void StopCharge(InputAction.CallbackContext context)
         {
             SetUIActive(false);
+            isCharging = false;
             StopAllCoroutines();
 
             Debug.Log(time / fillTime);
@@ -127,6 +126,8 @@ namespace PhantomStars
         #region Direction
         private void StickDirection(InputAction.CallbackContext context)
         {
+            if (!isCharging) { return; }
+
             Vector2 direction = context.action.ReadValue<Vector2>();
 
             if (direction.y < 0)
@@ -150,10 +151,16 @@ namespace PhantomStars
         {
             crossChooseDirection = true;
         }
+
         private void StopCrossDirection(InputAction.CallbackContext context)
         {
             crossChooseDirection = false;
         }
         #endregion Direction
+
+        private void Throw()
+        {
+
+        }
     }
 }
