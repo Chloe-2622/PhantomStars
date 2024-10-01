@@ -42,6 +42,7 @@ GameObject:
   m_Component:
   - component: {fileID: 932056114262846749}
   - component: {fileID: 406091991123427722}
+  - component: {fileID: 3152465440314534465}
   m_Layer: 0
   m_Name: Fisherman
   m_TagString: Untagged
@@ -78,15 +79,99 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dac273a51fff1e46bba938426bba3b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chargeAction: {fileID: 2528069918156877651, guid: 174d8f87be5a1a84db19ffd79dabba5e, type: 3}
-  stickChooseDirectionAction: {fileID: 747643800816909144, guid: 174d8f87be5a1a84db19ffd79dabba5e, type: 3}
-  crossChooseDirectionAction: {fileID: 8614259701659070539, guid: 174d8f87be5a1a84db19ffd79dabba5e, type: 3}
   boat: {fileID: 3283312983080058616}
   chargeImage: {fileID: 0}
   directionArrow: {fileID: 0}
   chargeJauge: {fileID: 0}
   fillTime: 1
-  angleStep: 10
+  angleStep: 100
+  minThrowingRadius: 2
+  maxThrowTime: 2
+  targetPrefab: {fileID: 495195613741677924, guid: b75febfeef35405428b2efc1c76147be, type: 3}
+  targetBlinkTime: 0.2
+  hookPrefab: {fileID: 8012419874830430967, guid: 7a99f6d1a16f71f428be955a0c174290, type: 3}
+--- !u!114 &3152465440314534465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5302434638600416601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 174d8f87be5a1a84db19ffd79dabba5e, type: 3}
+  m_NotificationBehavior: 2
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 03c84a00-163e-47de-aded-84199085216d
+    m_ActionName: FishingRodActions/Reel[/SwitchProControllerHID/buttonEast]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 406091991123427722}
+        m_TargetAssemblyTypeName: PhantomStars.PushFishingrod, Assembly-CSharp
+        m_MethodName: ChargeInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: f59db27c-6820-459e-940f-cd1f48112a27
+    m_ActionName: Throw/Charge[/SwitchProControllerHID/buttonEast]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 406091991123427722}
+        m_TargetAssemblyTypeName: PhantomStars.PushFishingrod, Assembly-CSharp
+        m_MethodName: StickDirectionInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: abaae221-93a4-4bc1-a24a-a6a74331b355
+    m_ActionName: Throw/Stick Direction[/SwitchProControllerHID/leftStick]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 406091991123427722}
+        m_TargetAssemblyTypeName: PhantomStars.PushFishingrod, Assembly-CSharp
+        m_MethodName: CrossDirectionInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: ccaf3566-cc6b-44e6-8b53-04a2c4203207
+    m_ActionName: Throw/Cross Direction[/SwitchProControllerHID/dpad/left,/SwitchProControllerHID/dpad/right]
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Throw
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &7437295794639426596
 GameObject:
   m_ObjectHideFlags: 0

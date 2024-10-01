@@ -2,16 +2,13 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using System.Diagnostics.CodeAnalysis;
+using TMPro;
 
 namespace PhantomStars
 {
     public class PushFishingrod : MonoBehaviour
     {
-        [Header("Actions")]
-        [SerializeField] private InputActionReference chargeAction;
-        [SerializeField] private InputActionReference stickChooseDirectionAction;
-        [SerializeField] private InputActionReference crossChooseDirectionAction;
-
         [Header("Boat")]
         [SerializeField] private Transform boat;
 
@@ -28,58 +25,50 @@ namespace PhantomStars
         [Header("Direction")]
         [SerializeField] private float angleStep;
         private bool crossChooseDirection = false;
+        private int crossDirection;
 
-        private Vector2 windowSize;
+        [Header("Throw")]
+        [SerializeField] private float minThrowingRadius;
+        [SerializeField] private float maxThrowTime;
 
-        #region Initialize
-        private void OnEnable()
-        {
-            chargeAction.action.Enable();
-            stickChooseDirectionAction.action.Enable();
-            crossChooseDirectionAction.action.Enable();
+        [Header("Target")]
+        [SerializeField] private GameObject targetPrefab;
+        [SerializeField] private float targetBlinkTime;
+        private GameObject target;
 
-            chargeAction.action.started += StartCharge;
-            chargeAction.action.canceled += StopCharge;
+        [Header("Hook")]
+        [SerializeField] private GameObject hookPrefab;
+        private GameObject hook;
 
-            stickChooseDirectionAction.action.performed += StickDirection;
-            crossChooseDirectionAction.action.started += StartCrossDirection;
-            crossChooseDirectionAction.action.canceled += StopCrossDirection;
-        }
+        private float maxRadius;
 
         private void OnDisable()
         {
-            chargeAction.action.Disable();
-            stickChooseDirectionAction.action.Disable();
-            crossChooseDirectionAction.action.Disable();
-
-            chargeAction.action.started -= StartCharge;
-            chargeAction.action.canceled -= StopCharge;
-
-            stickChooseDirectionAction.action.performed -= StickDirection;
-            crossChooseDirectionAction.action.started -= StartCrossDirection;
-            crossChooseDirectionAction.action.canceled -= StopCrossDirection;
-
             StopAllCoroutines();
         }
 
         void Start()
         {
             SetUIActive(false);
-            windowSize = -Camera.main.ScreenToWorldPoint(Vector3.zero);
+            Vector2 windowSize = -Camera.main.ScreenToWorldPoint(Vector3.zero);
 
-            Vector3 pos = Camera.main.WorldToScreenPoint(transform.position);
-            directionArrow.transform.SetLocalPositionAndRotation(pos, Quaternion.Euler(0, 0, 90));
+            maxRadius = Mathf.Min(windowSize.x, 2 * windowSize.y);
+            Debug.Log(maxRadius);
+
+            directionArrow.transform.SetPositionAndRotation(Camera.main.WorldToScreenPoint(transform.position), Quaternion.Euler(0, 0, 90));
+
+            target = GameObject.Instantiate(targetPrefab);
+            target.SetActive(false);
+
+            hook = GameObject.Instantiate(hookPrefab);
+            hook.SetActive(false);
         }
-        #endregion Initialize
-
 
         private void Update()
         {
             if (!crossChooseDirection || !isCharging) { return; }
 
-            float direction = crossChooseDirectionAction.action.ReadValue<Vector2>()[0];
-
-            float newAngle = Mathf.Max(0, Mathf.Min(180, directionArrow.transform.rotation.eulerAngles.z - direction * angleStep * Time.deltaTime));
+            float newAngle = Fcrop(0, 180, directionArrow.transform.rotation.eulerAngles.z - crossDirection * angleStep * Time.deltaTime);
 
             directionArrow.transform.rotation = Quaternion.Euler(0, 0, newAngle);
         }
@@ -91,23 +80,26 @@ namespace PhantomStars
         }
 
         #region Charge
-        private void StartCharge(InputAction.CallbackContext context)
+        public void ChargeInput(InputAction.CallbackContext context)
         {
-            SetUIActive(true);
-            isCharging = true;
-            StartCoroutine(Charge(1));
+            if (context.phase == InputActionPhase.Started)
+            {
+                SetUIActive(true);
+                isCharging = true;
+                StartCoroutine(Charging(1));
+            }
+            else if (context.phase == InputActionPhase.Canceled)
+            {
+                SetUIActive(false);
+                isCharging = false;
+                StopAllCoroutines();
+
+                Debug.Log(time / fillTime);
+                Throw(time / fillTime);
+            }
         }
 
-        private void StopCharge(InputAction.CallbackContext context)
-        {
-            SetUIActive(false);
-            isCharging = false;
-            StopAllCoroutines();
-
-            Debug.Log(time / fillTime);
-        }
-
-        private IEnumerator Charge(int sens)
+        private IEnumerator Charging(int sens)
         {
             time = fillTime * ((1 - sens) / 2);
 
@@ -119,16 +111,18 @@ namespace PhantomStars
             }
 
             chargeJauge.fillAmount = (float)((1 + sens) / 2);
-            StartCoroutine(Charge(-1 * sens));
+            StartCoroutine(Charging(-1 * sens));
         }
         #endregion Charge
 
         #region Direction
-        private void StickDirection(InputAction.CallbackContext context)
+        public void StickDirectionInput(InputAction.CallbackContext context)
         {
             if (!isCharging) { return; }
 
             Vector2 direction = context.action.ReadValue<Vector2>();
+
+            if (direction == Vector2.zero) { return; }
 
             if (direction.y < 0)
             {
@@ -147,20 +141,70 @@ namespace PhantomStars
             directionArrow.transform.rotation = Quaternion.Euler(0, 0, angle);
         }
 
-        private void StartCrossDirection(InputAction.CallbackContext context)
+        public void CrossDirectionInput(InputAction.CallbackContext context)
         {
-            crossChooseDirection = true;
-        }
-
-        private void StopCrossDirection(InputAction.CallbackContext context)
-        {
-            crossChooseDirection = false;
+            if (context.phase == InputActionPhase.Started)
+            {
+                crossChooseDirection = true;
+                crossDirection = (int)context.action.ReadValue<Vector2>()[0];
+            }
+            if (context.phase == InputActionPhase.Performed)
+            {
+                crossDirection = (int)context.action.ReadValue<Vector2>()[0];
+            }
+            else if (context.phase == InputActionPhase.Canceled)
+            {
+                crossChooseDirection = false;
+            }
         }
         #endregion Direction
 
-        private void Throw()
+        #region Throw
+        private void Throw(float ratio)
         {
+            Vector2 goal = directionArrow.transform.right * (minThrowingRadius + (maxRadius - minThrowingRadius) * ratio) + transform.position;
 
+            // Target
+            target.SetActive(true);
+            target.transform.position = goal;
+
+            // Hook
+            hook.SetActive(true);
+            hook.transform.SetPositionAndRotation(transform.position, directionArrow.transform.rotation * Quaternion.Euler(0, 0 , -90));
+
+            float minThrowTime = (maxThrowTime * minThrowingRadius) / maxRadius;
+            float throwTime = minThrowTime + (maxThrowTime - minThrowTime) * ratio;
+
+            StartCoroutine(Throwing(goal, throwTime));
+        }
+
+        private IEnumerator Throwing(Vector2 goal, float throwTime)
+        {
+            float t = 0;
+            float targetBlink_t = 0;
+
+            while (t < throwTime)
+            {
+                hook.transform.position = Vector3.Lerp(transform.position, goal, t / throwTime);
+
+                if (targetBlink_t > targetBlinkTime)
+                {
+                    target.SetActive(!target.activeSelf);
+                    targetBlink_t = 0;
+                }
+                
+                t += Time.deltaTime;
+                targetBlink_t += Time.deltaTime;
+                yield return null;
+            }
+
+            target.SetActive(false);
+        }
+        #endregion Throw
+
+        private static float Fcrop(float min, float max, float value)
+        {
+            return Mathf.Max(min, Mathf.Min(max, value));
         }
     }
 }
