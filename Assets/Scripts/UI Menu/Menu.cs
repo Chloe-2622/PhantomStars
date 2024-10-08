@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEditor.U2D.Animation;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 namespace PhantomStars.UI
 {
@@ -22,7 +23,7 @@ namespace PhantomStars.UI
             controlsPanel.SetActive(false);
         }
 
-        #region Panal Manager
+        #region Panel Manager
         public void SwitchOptionsPanel()
         {
             mainPanel.SetActive(!mainPanel.activeSelf);
@@ -41,6 +42,11 @@ namespace PhantomStars.UI
             optionsPanel.SetActive(false);
             controlsPanel.SetActive(false);
         }
-        #endregion Panal Manager
+        #endregion Panel Manager
+
+        public void LoadGame()
+        {
+            SceneManager.LoadScene("Chloe");
+        }
     }
 }
