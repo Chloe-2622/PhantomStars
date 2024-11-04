@@ -7,12 +7,12 @@
             "actions": [
                 {
                     "name": "ReelVertical",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "03c84a00-163e-47de-aded-84199085216d",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "ReelHorizontal",
@@ -34,17 +34,6 @@
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "27b10651-a8fe-47bc-9264-5e22a437cef2",
-                    "path": "<Gamepad>/buttonEast",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ReelVertical",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "LeftStick",
                     "id": "1a9f877f-7cbe-4a23-92a2-4f2db278ad1e",
@@ -163,6 +152,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "StartReel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f9ba5233-1745-4b19-b457-3e4663a7c164",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ReelVertical",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

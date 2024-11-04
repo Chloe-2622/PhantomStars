@@ -2,32 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace PhantomStars
+public class GameManager : MonoBehaviour
 {
-    public class GameManager : MonoBehaviour
+    public static GameManager Instance { get; private set; }
+
+    public bool hasHookArrived;
+    public bool isFishHooked;
+
+    public PushFishingrod pushFishingRod;
+
+    public int caughtFish = 0;
+
+    public enum GameState
     {
-        public static GameManager Instance { get; private set; }
+        CATCHING,
+        REELING
+    }
 
-        public int caughtFish = 0;
+    public PullFishingRod pullFishingRod;
 
-        public enum GameState
+    private void Awake()
+    {
+        if (Instance == null)
         {
-            CATCHING,
-            REELING
+            Instance = this;
         }
-
-        public PullFishingRod pullFishingRod;
-
-        private void Awake()
+        else
         {
-            if (Instance == null)
-            {
-                Instance = this;
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
+            Destroy(gameObject);
         }
     }
 }

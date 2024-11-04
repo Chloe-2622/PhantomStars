@@ -88,6 +88,9 @@ MonoBehaviour:
   reeledSpeed: 6
   minMovingDelay: 1
   maxMovingDelay: 3
+  hookLayer:
+    serializedVersion: 2
+    m_Bits: 1024
 --- !u!1 &7488800876976532637
 GameObject:
   m_ObjectHideFlags: 0
