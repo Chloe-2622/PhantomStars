@@ -318,7 +318,18 @@
                 {
                     "name": "",
                     "id": "c66017c6-d477-4f03-b99d-fec9f9bb2713",
-                    "path": "<Gamepad>/buttonSouth",
+                    "path": "<SwitchProControllerHID>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Return",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1416af43-fd0d-4831-8414-2f974a13c42e",
+                    "path": "<XInputController>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
