@@ -24,9 +24,9 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "StartReel",
+                    "name": "ContinueTutorial",
                     "type": "Button",
-                    "id": "b43b30ce-2d7b-433f-9fb8-3f27eb294020",
+                    "id": "e3ee1d83-58ff-4d38-9c8f-3e4dd9f77b24",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -146,23 +146,34 @@
                 },
                 {
                     "name": "",
-                    "id": "787f0f34-aca1-47b7-9540-0b76cd0ef6c3",
-                    "path": "<Gamepad>/buttonNorth",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "StartReel",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "f9ba5233-1745-4b19-b457-3e4663a7c164",
                     "path": "<Gamepad>/rightStick",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "ReelVertical",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "00230f76-514b-436a-99c5-b54e94a4f957",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ContinueTutorial",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5685b213-e03e-4d53-945f-e07a8381791d",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ContinueTutorial",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -198,6 +209,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "ContinueTutorial",
+                    "type": "Button",
+                    "id": "8aed3c30-ee33-4327-8618-085bddb15f9b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -255,6 +275,17 @@
                     "action": "Cross Direction",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "8f68d085-fd8c-4f38-aeb0-35d1bfa7352b",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ContinueTutorial",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },

@@ -60,11 +60,11 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.42842, y: 0.42842, z: 0.42842}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3283312983080058616}
   - {fileID: 5908050343127381403}
+  - {fileID: 3283312983080058616}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &406091991123427722
@@ -86,7 +86,7 @@ MonoBehaviour:
   fillTime: 1
   angleStep: 100
   minThrowingRadius: 2
-  maxThrowTime: 2
+  maxThrowTime: 1
   targetPrefab: {fileID: 495195613741677924, guid: b75febfeef35405428b2efc1c76147be, type: 3}
   targetBlinkTime: 0.2
   hookPrefab: {fileID: 8012419874830430967, guid: 7a99f6d1a16f71f428be955a0c174290, type: 3}
@@ -167,6 +167,18 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: ccaf3566-cc6b-44e6-8b53-04a2c4203207
     m_ActionName: Throw/Cross Direction[/SwitchProControllerHID/dpad/left,/SwitchProControllerHID/dpad/right]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 8cfe15e5-8e6c-41be-a583-d94be8b3a5ca
+    m_ActionName: Reel/ReelHorizontal[/XInputControllerWindows/leftStick/up,/SwitchProControllerHID/leftStick/up,/XInputControllerWindows/leftStick/down,/SwitchProControllerHID/leftStick/down,/XInputControllerWindows/leftStick/left,/SwitchProControllerHID/leftStick/left,/XInputControllerWindows/leftStick/right,/SwitchProControllerHID/leftStick/right,/XInputControllerWindows/dpad/up,/SwitchProControllerHID/dpad/up,/XInputControllerWindows/dpad/down,/SwitchProControllerHID/dpad/down,/XInputControllerWindows/dpad/left,/SwitchProControllerHID/dpad/left,/XInputControllerWindows/dpad/right,/SwitchProControllerHID/dpad/right]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: e3ee1d83-58ff-4d38-9c8f-3e4dd9f77b24
+    m_ActionName: Reel/ContinueTutorial[/XInputControllerWindows/buttonEast,/SwitchProControllerHID/buttonEast,/XInputControllerWindows/buttonSouth,/SwitchProControllerHID/buttonSouth]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 6151242c-dc6e-4c2e-b4e4-5714d237f66f
+    m_ActionName: Menu/Return[/Keyboard/escape,/XInputControllerWindows/buttonSouth,/SwitchProControllerHID/buttonSouth]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Throw
@@ -199,7 +211,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.0069880113}
-  m_LocalScale: {x: 5, y: 2, z: 1}
+  m_LocalScale: {x: 1.2416, y: 1.2416, z: 1.2416}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3283312983080058616}
@@ -245,7 +257,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0e8f256f686023643a84e243c4d4076b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -282,7 +294,7 @@ Transform:
   m_GameObject: {fileID: 8678536138727901969}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.64, z: 2.45}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -329,8 +341,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Sprite: {fileID: 21300000, guid: fa231dcdb78c228499200438b25bf66e, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
