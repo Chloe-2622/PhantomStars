@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class CameraMovement : MonoBehaviour
 {
-    [Header("Camera Shake")]
+    [Header("Parameters")]
     [SerializeField] private float shakeIntensity = 0.0f;
     [SerializeField] private float shakeReductionFactor = 10.0f;
-    private bool isShaking;
 
-    [Header("Camera Position")]
-    [SerializeField] private GameObject target;
-    [SerializeField] private Vector3 targetPosition;
-    [SerializeField] private float cameraSpeed = 5.0f;
+    private GameObject target;
+    private Vector3 targetPosition;
+    private bool isShaking;
     private bool isFollowingTarget;
     private bool isMovingToTarget;
     private Vector3 defaultPosition;
@@ -35,7 +33,7 @@ public class CameraMovement : MonoBehaviour
 
     public void Shake(float intensity)
     {
-        Vector3 randomPosition = targetPosition + Random.insideUnitSphere * intensity / shakeReductionFactor;
+        Vector3 randomPosition = targetPosition + ((Time.timeScale != 0) ? Random.insideUnitSphere * intensity / shakeReductionFactor : Vector3.zero);
         transform.localPosition = randomPosition;
     }
 
@@ -44,8 +42,8 @@ public class CameraMovement : MonoBehaviour
         while (isFollowingTarget) {
             SetTargetPosition(target.transform.position);
 
-            Vector3 newPosition = Vector3.MoveTowards(transform.localPosition, new Vector3(targetPosition.x, targetPosition.y, -10), cameraSpeed * Time.deltaTime);
-            newPosition.y = Mathf.Clamp(newPosition.y, -2.25f, 2.38f);
+            Vector3 newPosition = Vector3.MoveTowards(transform.localPosition, new Vector3(targetPosition.x, targetPosition.y, -10), 10.0f * Time.deltaTime);
+            newPosition.y = Mathf.Clamp(newPosition.y, -2.09f, 2.35f);
             transform.localPosition = newPosition;
             yield return null;
         }

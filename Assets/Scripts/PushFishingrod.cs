@@ -42,6 +42,15 @@ public class PushFishingrod : MonoBehaviour
 
     private float maxRadius;
 
+    [Header("Tutorial")]
+    [SerializeField] private GameObject tutorialUI;
+    [SerializeField] private GameObject loadingBar;
+    // private bool tutorial = true;
+    private bool continueTutorialPressed = false;
+    private bool chargeTutorial = false;
+    private float holdingTime = 1.0f;
+    private float holdingTimer = 0.0f;
+
     private void OnDisable()
     {
         StopAllCoroutines();
@@ -63,6 +72,8 @@ public class PushFishingrod : MonoBehaviour
 
         hook = GameObject.Instantiate(hookPrefab);
         hook.SetActive(false);
+
+        StartCoroutine(TutorialCoroutine());
     }
 
     private void Update()
@@ -80,12 +91,64 @@ public class PushFishingrod : MonoBehaviour
         chargeImage.gameObject.SetActive(active);
     }
 
+    #region Tutorial
+
+    private IEnumerator TutorialCoroutine()
+    {
+        tutorialUI.SetActive(true);
+
+        yield return new WaitForSeconds(2);
+
+        // Show horizontal pull tutorial
+        GameObject tutorialCharge = tutorialUI.transform.Find("Tutorial_Charge").gameObject;
+        tutorialCharge.SetActive(true);
+        Time.timeScale = 0;
+        float t = 0.0f;
+        float readingTime = 5.0f;
+        loadingBar.SetActive(true);
+        while (t < readingTime) {
+            t += Time.unscaledDeltaTime;
+            loadingBar.transform.localScale = new Vector3(Mathf.Lerp(12.0f, 0.0f, t / readingTime), 0.34f, 1);
+            yield return null;
+        }
+        tutorialCharge.SetActive(false);
+        loadingBar.SetActive(false);
+        Time.timeScale = 1;
+
+        while (holdingTimer < holdingTime)
+        {
+            Debug.Log("Holding time: " + holdingTimer);
+            yield return null;
+        }
+
+        GameObject tutorialRelease = tutorialUI.transform.Find("Tutorial_Release").gameObject;
+        tutorialRelease.SetActive(true);
+        loadingBar.SetActive(true);
+        Time.timeScale = 0;
+        t = 0.0f;
+        readingTime = 7.0f;
+        while (t < readingTime) {
+            t += Time.unscaledDeltaTime;
+            loadingBar.transform.localScale = new Vector3(Mathf.Lerp(12.0f, 0.0f, t / readingTime), 0.34f, 1);
+            yield return null;
+        }
+        loadingBar.SetActive(false);
+        tutorialRelease.SetActive(false);
+        Time.timeScale = 1;
+
+        tutorialUI.SetActive(false);
+    }
+
+    #endregion Tutorial
+
     #region Charge
     public void ChargeInput(InputAction.CallbackContext context)
     {
         if (gameObject.activeSelf == false) { return; }
+        if (Time.timeScale == 0) return;
         if (context.phase == InputActionPhase.Started && !isThrowing)
         {
+            holdingTimer = 0.0f;
             SetUIActive(true);
             isCharging = true;
             StartCoroutine(Charging(1));
@@ -97,6 +160,7 @@ public class PushFishingrod : MonoBehaviour
             SetUIActive(false);
             isCharging = false;
             StopAllCoroutines();
+            holdingTimer = 0.0f;
 
             Throw(time / fillTime);
         }
@@ -110,6 +174,7 @@ public class PushFishingrod : MonoBehaviour
         {
             chargeJauge.fillAmount = Mathf.Lerp(0, 1, time / fillTime);
             time += sens * Time.deltaTime;
+            holdingTimer += Time.deltaTime;
             yield return null;
         }
 
@@ -126,6 +191,8 @@ public class PushFishingrod : MonoBehaviour
         Vector2 direction = context.action.ReadValue<Vector2>();
 
         if (direction == Vector2.zero) { return; }
+
+        if (Time.timeScale == 0) return;
 
         if (direction.y < 0)
         {
@@ -146,6 +213,7 @@ public class PushFishingrod : MonoBehaviour
 
     public void CrossDirectionInput(InputAction.CallbackContext context)
     {
+        if (Time.timeScale == 0) return;
         if (context.phase == InputActionPhase.Started)
         {
             crossChooseDirection = true;

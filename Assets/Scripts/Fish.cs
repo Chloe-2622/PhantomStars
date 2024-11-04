@@ -84,6 +84,7 @@ public class Fish : MonoBehaviour
             float maxX = mainCamera.ViewportToWorldPoint(Vector2.one).x - fishSprite.bounds.extents.x;
             float minY = mainCamera.ViewportToWorldPoint(Vector2.zero).y + fishSprite.bounds.extents.y;
             float maxY = mainCamera.ViewportToWorldPoint(Vector2.one).y - fishSprite.bounds.extents.y;
+            minY = (maxY + minY) / 2.0f;
 
             Vector2 randomPosition = new (Random.Range(minX, maxX), Random.Range(minY, maxY));
             StartCoroutine(MoveRandom(randomPosition, iddleSpeed));

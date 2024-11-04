@@ -1,17 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class PullFishingRod : MonoBehaviour
 {
-    [SerializeField] private InputActionReference pullAction;
-    [SerializeField] private InputActionReference horizontalPullAction;
-    [SerializeField] private InputActionReference startReelingAction;
+    [Header("Scene References")]
+    [SerializeField] private GameObject controllerUIHelp;
+    [SerializeField] private GameObject tutorialUI;
 
-    [SerializeField] private Fish pulledFish;
+    [Header("Parameters")]
     [SerializeField] private float defaultPullSpeed = 0.5f;
+
+    private Fish pulledFish;
     private float pullSpeed;
     private bool isPulling = false;
     private bool isPullingHorizontally = false;
@@ -24,6 +26,9 @@ public class PullFishingRod : MonoBehaviour
     private float rollsThisSecond;
     private float rollPerSeconds;
     private float rollTimer;
+
+    bool tutorial = true;
+    bool continueTutorialPressed = false;
 
     
     Vector2 horizontalPull;
@@ -86,6 +91,14 @@ public class PullFishingRod : MonoBehaviour
             isPullingHorizontally = false;
         }
     }
+    public void ContinueTutorial(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            continueTutorialPressed = true;
+        }
+    }
+
 
     /// <summary>
     /// This function and input action are for debug purposes
@@ -93,15 +106,15 @@ public class PullFishingRod : MonoBehaviour
     /// during the hook phase needs to be StartReelingFish(Fish fish)
     /// </summary>
     /// <param name="context"></param>
-    public void StartReeling(InputAction.CallbackContext context)
-    {
-        if (pulledFish != null) return;
-        if (context.phase == InputActionPhase.Started)
-        {
-            pulledFish = GameObject.Find("Fish").GetComponent<Fish>();
-            StartReelingFish(pulledFish);
-        }
-    }
+    // public void StartReeling(InputAction.CallbackContext context)
+    // {
+    //     if (pulledFish != null) return;
+    //     if (context.phase == InputActionPhase.Started)
+    //     {
+    //         pulledFish = GameObject.Find("Fish").GetComponent<Fish>();
+    //         StartReelingFish(pulledFish);
+    //     }
+    // }
 
     private void Update()
     {
@@ -154,9 +167,20 @@ public class PullFishingRod : MonoBehaviour
         initialDistance = pulledFish.transform.position.y - transform.position.y;
 
         // GameManager.Instance.pushFishingRod.enabled = false;
-        ResistanceManager.Instance.SetIsFishReeled(true);
-        ResistanceManager.Instance.showDangerBar(true);
+        // ResistanceManager.Instance.SetIsFishReeled(true);
+        // ResistanceManager.Instance.showDangerBar(true);
+        if (!tutorial) StartCoroutine(ShowControllerUIHelp());
         fish.StartReeling();
+
+        if (tutorial)
+        {
+            tutorial = false;
+            StartCoroutine(TutorialCoroutine());
+        } else 
+        {
+            ResistanceManager.Instance.SetIsFishReeled(true);
+            ResistanceManager.Instance.showDangerBar(true);
+        }
     }
 
     public void StopReelingFish() {
@@ -165,5 +189,67 @@ public class PullFishingRod : MonoBehaviour
         GameManager.Instance.pushFishingRod.enabled = true;
         Camera.main.GetComponent<CameraMovement>().SetIsShaking(false);
         ResistanceManager.Instance.showDangerBar(false);
+        if (!tutorial) controllerUIHelp.SetActive(false);
+    }
+
+    private IEnumerator ShowControllerUIHelp() {
+        controllerUIHelp.SetActive(true);
+        GameObject arrows = controllerUIHelp.transform.Find("Arrows").gameObject;
+        float rotationSpeed = -500.0f;
+
+        while (pulledFish != null) {
+            arrows.transform.Rotate(new Vector3(0, 0, rotationSpeed * Time.deltaTime));
+            yield return null;
+        }
+    }
+
+    private IEnumerator TutorialCoroutine()
+    {
+        tutorialUI.SetActive(true);
+
+        // Show horizontal pull tutorial
+        GameObject tutorialHorizontal = tutorialUI.transform.Find("Tutorial_Horizontal").gameObject;
+        tutorialHorizontal.SetActive(true);
+        continueTutorialPressed = false;
+        Time.timeScale = 0;
+        while (!continueTutorialPressed)
+        {
+            yield return null;
+        }
+        tutorialHorizontal.SetActive(false);
+        Time.timeScale = 1;
+
+        yield return new WaitForSeconds(5);
+
+        // show vertical pull tutorial
+        GameObject tutorialVertical = tutorialUI.transform.Find("Tutorial_Vertical").gameObject;
+        tutorialVertical.SetActive(true);
+        continueTutorialPressed = false;
+        Time.timeScale = 0;
+        while (!continueTutorialPressed)
+        {
+            yield return null;
+        }
+        tutorialVertical.SetActive(false);
+        Time.timeScale = 1;
+        StartCoroutine(ShowControllerUIHelp());
+
+        yield return new WaitForSeconds(3);
+
+        // Explain the resistance
+        GameObject tutorialResistance = tutorialUI.transform.Find("Tutorial_Resistance").gameObject;
+        tutorialResistance.SetActive(true);
+        continueTutorialPressed = false;
+        ResistanceManager.Instance.SetIsFishReeled(true);
+        ResistanceManager.Instance.showDangerBar(true);
+        Time.timeScale = 0;
+        while (!continueTutorialPressed)
+        {
+            yield return null;
+        }
+        tutorialResistance.SetActive(false);
+        Time.timeScale = 1;
+        
+        tutorialUI.SetActive(false);
     }
 }
