@@ -51,7 +51,10 @@ public class Fish : MonoBehaviour
     }
     private void OnDisable() {
         ResistanceManager.Instance.EscapeEvent.RemoveListener(Escaped);
-        Gamepad.current.SetMotorSpeeds(0f, 0f);
+        if (Gamepad.current != null)
+        {
+            Gamepad.current.SetMotorSpeeds(0f, 0f);
+        }
     }
 
     private void Awake()
@@ -251,13 +254,25 @@ public class Fish : MonoBehaviour
         Camera.main.GetComponent<CameraMovement>().SetIsFollowingTarget(false);
         Camera.main.GetComponent<CameraMovement>().SetTarget(null);
 
-        Gamepad.current.SetMotorSpeeds(0f, 0f);
+        if (Gamepad.current != null)
+        {
+            Gamepad.current.SetMotorSpeeds(0f, 0f);
+        }
         GameManager.Instance.pushFishingRod.RetrieveHook();
     }
 
     public void Caught() {
         if (GameManager.Instance.isTutorialActivated)
         {
+            GameManager.Instance.pullFishingRod.StopReelingFish();
+            GameManager.Instance.caughtFish++;
+            GameManager.Instance.isFishHooked = false;
+
+            if (Gamepad.current != null)
+            {
+                Gamepad.current.SetMotorSpeeds(0f, 0f);
+            }
+
             SceneManager.LoadScene("Title Screen");
         }
         else
@@ -271,7 +286,10 @@ public class Fish : MonoBehaviour
             Camera.main.GetComponent<CameraMovement>().SetTarget(null);
 
             Destroy(gameObject);
-            Gamepad.current.SetMotorSpeeds(0f, 0f);
+            if (Gamepad.current != null)
+            {
+                Gamepad.current.SetMotorSpeeds(0f, 0f);
+            }
             GameManager.Instance.pushFishingRod.RetrieveHook();
 
             GameManager.Instance.pullFishingRod.IncreaseFishCounter();

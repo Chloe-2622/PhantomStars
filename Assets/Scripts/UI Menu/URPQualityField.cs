@@ -46,6 +46,7 @@ public class URPQualityField : MonoBehaviour
         urpAsset.renderScale = qualityLevels[qualityLevelIndex].value;
     }
 
+#if UNITY_EDITOR
     private void OnValidate()
     {
         if (Selection.activeGameObject != this.gameObject) { return; }
@@ -61,4 +62,5 @@ public class URPQualityField : MonoBehaviour
 
         dropdown.SetValueWithoutNotify(qualityLevelIndex);
     }
+#endif
 }

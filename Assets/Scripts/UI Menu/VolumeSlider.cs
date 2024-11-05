@@ -1,7 +1,6 @@
 using TMPro;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -159,6 +158,7 @@ namespace PhantomStars.UI
         }
         #endregion Selectable
 
+#if UNITY_EDITOR
         protected override void OnValidate()
         {
             if (Selection.activeGameObject != this.gameObject) { return; }
@@ -172,5 +172,6 @@ namespace PhantomStars.UI
             }
             UpdateSliderIcon();
         }
+#endif
     }
 }

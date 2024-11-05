@@ -132,23 +132,6 @@ public class PullFishingRod : MonoBehaviour
         }
     }
 
-
-    /// <summary>
-    /// This function and input action are for debug purposes
-    /// The function to be called when the fish has been hooked
-    /// during the hook phase needs to be StartReelingFish(Fish fish)
-    /// </summary>
-    /// <param name="context"></param>
-    // public void StartReeling(InputAction.CallbackContext context)
-    // {
-    //     if (pulledFish != null) return;
-    //     if (context.phase == InputActionPhase.Started)
-    //     {
-    //         pulledFish = GameObject.Find("Fish").GetComponent<Fish>();
-    //         StartReelingFish(pulledFish);
-    //     }
-    // }
-
     private void Update()
     {
         PullingBehaviour();

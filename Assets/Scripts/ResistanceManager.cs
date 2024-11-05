@@ -107,8 +107,11 @@ public class ResistanceManager : MonoBehaviour
         Camera.main.GetComponent<CameraMovement>().SetIsShaking(resistanceRate > 0);
         if (resistanceRate > 0) Camera.main.GetComponent<CameraMovement>().SetShakeIntensity(Mathf.Exp(4 * resistance / maxResistance - 4));
 
-        float motorsSpeed = Mathf.Lerp(0, maxShake, resistance / maxResistance);
-        Gamepad.current.SetMotorSpeeds(motorsSpeed, 0f);
+        if (Gamepad.current != null)
+        {
+            float motorsSpeed = Mathf.Lerp(0, maxShake, resistance / maxResistance);
+            Gamepad.current.SetMotorSpeeds(motorsSpeed, 0f);
+        }
 
         resistance = Mathf.Clamp(resistance, 0, maxResistance);
         UpdateDangerUI();
