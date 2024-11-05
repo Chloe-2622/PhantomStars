@@ -37,29 +37,32 @@ public class PushFishingrod : MonoBehaviour
     [Header("Hook")]
     [SerializeField] private GameObject hookPrefab;
     private GameObject hook;
-    private bool hasHookArrived;
+    private bool hasHookArrived = true;
     private bool isThrowing;
+    private bool isHookAvailable;
 
     private float maxRadius;
 
     [Header("Tutorial")]
     [SerializeField] private GameObject tutorialUI;
     [SerializeField] private GameObject loadingBar;
-    // private bool tutorial = true;
+    [SerializeField] private GameObject retreiveTutorialUI;
     private bool continueTutorialPressed = false;
-    private bool chargeTutorial = false;
-    private float holdingTime = 1.0f;
+    private bool tutorialOnce = false;
+    private readonly float holdingTime = 1.0f;
     private float holdingTimer = 0.0f;
 
     private void OnDisable()
     {
         StopAllCoroutines();
-        SetUIActive(false);
         if (target != null) {target.SetActive(false);}
     }
 
     void Start()
     {
+        isHookAvailable = true;
+        GameManager.Instance.pushFishingRod = this;
+
         SetUIActive(false);
         Vector2 windowSize = -Camera.main.ScreenToWorldPoint(Vector3.zero);
 
@@ -73,7 +76,10 @@ public class PushFishingrod : MonoBehaviour
         hook = GameObject.Instantiate(hookPrefab);
         hook.SetActive(false);
 
-        StartCoroutine(TutorialCoroutine());
+        if (GameManager.Instance.isTutorialActivated)
+        {
+            StartCoroutine(TutorialCoroutine());
+        }
     }
 
     private void Update()
@@ -139,13 +145,36 @@ public class PushFishingrod : MonoBehaviour
         tutorialUI.SetActive(false);
     }
 
+    private IEnumerator RetrieveTutorialCoroutine()
+    {
+        continueTutorialPressed = false;
+        retreiveTutorialUI.SetActive(true);
+
+        while (!continueTutorialPressed)
+        {
+            yield return null;
+        }
+
+        retreiveTutorialUI.SetActive(false);
+    }
+
+    public void ContinueTutorial(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            continueTutorialPressed = true;
+        }
+    }
+
     #endregion Tutorial
 
     #region Charge
     public void ChargeInput(InputAction.CallbackContext context)
     {
-        if (gameObject.activeSelf == false) { return; }
-        if (Time.timeScale == 0) return;
+        if (!isHookAvailable) return;
+
+        if (!gameObject.activeSelf) { return; }
+        if (Time.timeScale <= 0) return;
         if (context.phase == InputActionPhase.Started && !isThrowing)
         {
             holdingTimer = 0.0f;
@@ -254,6 +283,7 @@ public class PushFishingrod : MonoBehaviour
         float t = 0;
         float targetBlink_t = 0;
         isThrowing = true;
+        isHookAvailable = false;
 
         while (t < throwTime)
         {
@@ -270,12 +300,26 @@ public class PushFishingrod : MonoBehaviour
             yield return null;
         }
 
+        if (GameManager.Instance.isTutorialActivated && !tutorialOnce)
+        {
+            tutorialOnce = true;
+            yield return StartCoroutine(RetrieveTutorialCoroutine());
+        }
+        
+
         SetHasHookArrived(true);
         isThrowing = false;
 
         target.SetActive(false);
     }
     #endregion Throw
+
+    public void RetrieveHook()
+    {
+        hook.SetActive(false);
+
+        isHookAvailable = true;
+    }
 
     private static float Fcrop(float min, float max, float value)
     {

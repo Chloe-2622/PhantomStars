@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 
     public bool hasHookArrived;
     public bool isFishHooked;
+    public bool isTutorialActivated = false;
 
     public PushFishingrod pushFishingRod;
 
@@ -30,6 +31,31 @@ public class GameManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+        DontDestroyOnLoad(gameObject);
+    }
+
+    public static void SetPause(bool pause)
+    {
+        if (pause)
+        {
+            Time.timeScale = 0;
+        }
+        else
+        {
+            Time.timeScale = 1;
+        }
+    }
+
+    public static void SwitchPause()
+    {
+        if (Time.timeScale > 0)
+        {
+            Time.timeScale = 0;
+        }
+        else
+        {
+            Time.timeScale = 1;
         }
     }
 }

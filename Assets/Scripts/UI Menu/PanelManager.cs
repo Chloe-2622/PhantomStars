@@ -72,20 +72,55 @@ public class PanelManager : MonoBehaviour
 
     public void ReturnToPreviousPanel(InputAction.CallbackContext context)
     {
+        Debug.Log("Ici");
+
+
         if (context.phase == InputActionPhase.Started)
         {
-            ReturnToPreviousPanel();
+            if (currentPanels.Count == 1)
+            {
+                TogglePanel(panels[1].panel);
+            }
+            else
+            {
+                ReturnToPreviousPanel();
+            }
         }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static void LoadGame()
     {
+        GameManager.Instance.isTutorialActivated = false;
         SceneManager.LoadScene("Chloe");
+    }
+
+    public static void LoadTutorial()
+    {
+        GameManager.Instance.isTutorialActivated = true;
+        SceneManager.LoadScene("Chloe");
+    }
+
+    public static void GoToTittle()
+    {
+        SceneManager.LoadScene("Title Screen");
     }
 
     public static void Quit()
     {
         Application.Quit();
     }
-
 }

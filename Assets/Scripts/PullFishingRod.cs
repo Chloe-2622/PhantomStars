@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
+using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
 public class PullFishingRod : MonoBehaviour
 {
@@ -12,6 +14,10 @@ public class PullFishingRod : MonoBehaviour
 
     [Header("Parameters")]
     [SerializeField] private float defaultPullSpeed = 0.5f;
+
+    [Header("Fish Counter")]
+    [SerializeField] private TextMeshProUGUI fishCounter;
+    private int fishCount = 0;
 
     private Fish pulledFish;
     private float pullSpeed;
@@ -29,8 +35,9 @@ public class PullFishingRod : MonoBehaviour
 
     bool tutorial = true;
     bool continueTutorialPressed = false;
+    private bool fishPulling = false;
 
-    
+
     Vector2 horizontalPull;
 
     private Dictionary<float, (float, float)> closestAnglesOrder = new Dictionary<float, (float, float)> {
@@ -42,6 +49,32 @@ public class PullFishingRod : MonoBehaviour
 
     private void Awake() {
         pullSpeed = defaultPullSpeed;
+        tutorial = GameManager.Instance.isTutorialActivated;
+        GameManager.Instance.pullFishingRod = this;
+    }
+
+    public void KeyboardVerticalPulling(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            fishPulling = true;
+            StartCoroutine(KeyboardVerticalPullingCoroutine());
+        }
+        else if (context.phase == InputActionPhase.Canceled)
+        {
+            fishPulling = false;
+        }
+    }
+
+    public IEnumerator KeyboardVerticalPullingCoroutine()
+    {
+        while (fishPulling)
+        {
+            Debug.Log("Coucou");
+
+            SetIsPullingFish(true);
+            yield return null;
+        }
     }
 
     public void VerticalPulling(InputAction.CallbackContext context)
@@ -134,7 +167,10 @@ public class PullFishingRod : MonoBehaviour
             rollTimer = 0;
         }
         if (Time.time - lastClosestAngleTime > 0.2f) {
-            SetIsPullingFish(false);
+            if (!fishPulling)
+            {
+                SetIsPullingFish(false);
+            }
         }
         if (isPulling)
         {
@@ -251,5 +287,16 @@ public class PullFishingRod : MonoBehaviour
         Time.timeScale = 1;
         
         tutorialUI.SetActive(false);
+    }
+
+    public void IncreaseFishCounter()
+    {
+        fishCount++;
+        fishCounter.text = fishCount.ToString();
+
+        if (fishCount == 8)
+        {
+            SceneManager.LoadScene("Title Screen");
+        }
     }
 }

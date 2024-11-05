@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class ResistanceManager : MonoBehaviour
@@ -46,6 +47,9 @@ public class ResistanceManager : MonoBehaviour
 
     [Header("Events")]
     public UnityEvent EscapeEvent = new UnityEvent();
+
+    [Header("Gamepad Shake")]
+    [SerializeField] private float maxShake;
 
     private ResistanceState resistanceState = ResistanceState.REGENERATING;
 
@@ -102,6 +106,9 @@ public class ResistanceManager : MonoBehaviour
 
         Camera.main.GetComponent<CameraMovement>().SetIsShaking(resistanceRate > 0);
         if (resistanceRate > 0) Camera.main.GetComponent<CameraMovement>().SetShakeIntensity(Mathf.Exp(4 * resistance / maxResistance - 4));
+
+        float motorsSpeed = Mathf.Lerp(0, maxShake, resistance / maxResistance);
+        Gamepad.current.SetMotorSpeeds(motorsSpeed, 0f);
 
         resistance = Mathf.Clamp(resistance, 0, maxResistance);
         UpdateDangerUI();

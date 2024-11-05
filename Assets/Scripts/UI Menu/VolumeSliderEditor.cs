@@ -2,8 +2,6 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.UI;
 using PhantomStars.UI;
-using TMPro;
-using UnityEngine.Audio;
 
 namespace PhantomStars
 {

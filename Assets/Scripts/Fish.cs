@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class Fish : MonoBehaviour
 {
@@ -49,6 +51,7 @@ public class Fish : MonoBehaviour
     }
     private void OnDisable() {
         ResistanceManager.Instance.EscapeEvent.RemoveListener(Escaped);
+        Gamepad.current.SetMotorSpeeds(0f, 0f);
     }
 
     private void Awake()
@@ -247,17 +250,31 @@ public class Fish : MonoBehaviour
         GameManager.Instance.pullFishingRod.gameObject.SetActive(false);
         Camera.main.GetComponent<CameraMovement>().SetIsFollowingTarget(false);
         Camera.main.GetComponent<CameraMovement>().SetTarget(null);
+
+        Gamepad.current.SetMotorSpeeds(0f, 0f);
+        GameManager.Instance.pushFishingRod.RetrieveHook();
     }
 
     public void Caught() {
-        GameManager.Instance.pullFishingRod.StopReelingFish();
-        GameManager.Instance.caughtFish++;
-        GameManager.Instance.isFishHooked = false;
-        GameManager.Instance.pushFishingRod.gameObject.SetActive(true);
-        GameManager.Instance.pullFishingRod.gameObject.SetActive(false);
-        Camera.main.GetComponent<CameraMovement>().SetIsFollowingTarget(false);
-        Camera.main.GetComponent<CameraMovement>().SetTarget(null);
-        
-        Destroy(gameObject);
+        if (GameManager.Instance.isTutorialActivated)
+        {
+            SceneManager.LoadScene("Title Screen");
+        }
+        else
+        {
+            GameManager.Instance.pullFishingRod.StopReelingFish();
+            GameManager.Instance.caughtFish++;
+            GameManager.Instance.isFishHooked = false;
+            GameManager.Instance.pushFishingRod.gameObject.SetActive(true);
+            GameManager.Instance.pullFishingRod.gameObject.SetActive(false);
+            Camera.main.GetComponent<CameraMovement>().SetIsFollowingTarget(false);
+            Camera.main.GetComponent<CameraMovement>().SetTarget(null);
+
+            Destroy(gameObject);
+            Gamepad.current.SetMotorSpeeds(0f, 0f);
+            GameManager.Instance.pushFishingRod.RetrieveHook();
+
+            GameManager.Instance.pullFishingRod.IncreaseFishCounter();
+        }
     }
 }
