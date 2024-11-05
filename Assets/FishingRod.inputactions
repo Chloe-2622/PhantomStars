@@ -382,6 +382,17 @@
                 },
                 {
                     "name": "",
+                    "id": "39784e85-1ce7-47d4-9483-e0b43eb54192",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Charge",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "8c631d20-0293-4729-b990-c49dcb1d0b72",
                     "path": "<Gamepad>/leftStick",
                     "interactions": "",
@@ -538,6 +549,17 @@
                     "name": "",
                     "id": "c1021cff-7320-4a64-95e1-ffca0e5e31af",
                     "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Return Hook",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7e5df9b7-d6bb-49bb-b968-e85ff9cf3940",
+                    "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
